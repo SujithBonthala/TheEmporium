@@ -2,6 +2,8 @@ from tkinter import *
 from tkinter import messagebox
 import PIL as p
 import PIL.ImageTk as ptk
+import os
+from datetime import datetime
 root=Tk()
 root.title("theemporium.in")
 root.geometry("1360x1000")
@@ -120,6 +122,17 @@ label_logo_large=Label(Products_frame,image=image_logo_large,bd=2).place(x=250,y
 label_enjoy=Label(Products_frame,text="Enjoy Shopping",font="castellar 20 bold").place(x=370,y=370)
 Button_frame=LabelFrame(root,bd=2,relief="groove")
 Button_frame.place(x=2,y=60,width=300,height=380)
+def save_invoice(text):
+    op=messagebox.askyesno("Invoice Saving Confirmation","Do you want to save the invoice in a file?")
+    if op:
+        t=datetime.now()
+        s=str(t.day)+str(t.month)+str(t.year)+str(t.hour)+str(t.minute)+str(t.second)
+        f=open("Invoices/"+s+".txt","w")
+        f.write(text)
+        f.close()
+        messagebox.showinfo("Invoice Saving Status","Invoice is saved successfully as a text document with name "+s+".txt")
+    else:
+        messagebox.showinfo("Invoice Saving Status","The invoice is not saved into a file.")
 def HideAllFrames():
     for widget in Products_frame.winfo_children():
         widget.destroy()
@@ -936,7 +949,6 @@ def AppliancesCall():
     add_appliances8=Button(lf_appliances8,text="Add Item",bg="green",fg="white",font="times 9 bold",command=AddA8).place(x=68,y=245)
     add_appliances9=Button(lf_appliances9,text="Add Item",bg="green",fg="white",font="times 9 bold",command=AddA9).place(x=68,y=245)
     add_appliances10=Button(lf_appliances10,text="Add Item",bg="green",fg="white",font="times 9 bold",command=AddA10).place(x=68,y=245)
-    
 Grocery_button=Button(Button_frame,text="Grocery",font="times 20 bold",width=17,bd=6,bg="cadetblue",fg="white",activebackground="light blue",command=GroceryCall)
 Grocery_button.grid(row=0,column=0,padx=5,pady=5)
 Electronics_button=Button(Button_frame,text="Electronics",font="times 20 bold",width=17,bd=6,bg="cadetblue",fg="white",activebackground="light blue",command=ElectronicsCall)
@@ -961,6 +973,7 @@ def Bill():
         Products_frame.destroy()
         Button_frame.destroy()
         Coupon_frame.destroy()
+        bill_gen_button.destroy()
         grocery_price=0
         electronics_price=0
         sportsgym_price=0
@@ -998,15 +1011,15 @@ def Bill():
         else:
             suggest=Label(root,bd=1,text="Suggested : 5% Off upto Rs.1000",font="times 12",fg="blue").place(x=545,y=480)
         def GenBill(d,choice):
-            bill_area=LabelFrame(root,bd=2,relief="groove").place(x=400,y=80,width=900,height=600)
+            bill_area=LabelFrame(root,bd=2,relief="groove")
+            bill_area.place(x=305,y=80,width=750,height=600)
             bill_title=Label(bill_area,text="INVOICE",font="arial 15 bold",bd=4,relief="groove").pack(fill=X)
             scroll_y=Scrollbar(bill_area,orient=VERTICAL)
             bill_txt_area=Text(bill_area,yscrollcommand=scroll_y.set)
             scroll_y.pack(side=RIGHT,fill=Y)
             scroll_y.config(command=bill_txt_area.yview)
             bill_txt_area.pack(fill=BOTH,expand=1)
-            
-            bill_txt_area.insert(END,Spaces(32)+"The Emporium\n"+Spaces(90,'*')+"\n")
+            bill_txt_area.insert(END,Spaces(40)+"The Emporium\n"+Spaces(90,'*')+"\n")
             if len(grocery_list)>0:
                 bill_txt_area.insert(END,"Grocery Product(s)\n\nProduct Name"+Spaces(28)+"Price"+Spaces(25)+"Quantity\n")
                 for i in grocery_list:
@@ -1041,6 +1054,8 @@ def Bill():
                 bill_txt_area.insert(END,"\nCoupon Applied : 5% Off upto Rs.1000")
             bill_txt_area.insert(END,"\nDiscount Offered : Rs."+str(d))
             bill_txt_area.insert(END,"\nTotal Price(after discount) = Rs."+str(total_price-d))
+            save_button=Button(root,text="Save Invoice",font="times 20 bold",bd=6,bg="skyblue",width=10,fg="white",command=lambda:save_invoice(bill_txt_area.get("1.0",END)))
+            save_button.place(x=1120,y=600)
         Coupon_frame_2=LabelFrame(root,bd=2,relief="groove",text="Apply a Coupon",fg="green",font="arial 16 bold").place(x=500,y=150,width=380,height=300)
         Coupon_apply1=Button(Coupon_frame_2,text="15% Off upto Rs.500",font="times 20 bold",width=17,bd=6,bg="cadetblue",fg="white",activebackground="light blue",command=lambda:GenBill(discount[0],1))
         Coupon_apply1.place(x=540,y=190)
@@ -1050,5 +1065,6 @@ def Bill():
         Coupon_apply3.place(x=540,y=370)
     else:
         messagebox.showinfo("Bill Generation Confirmation","You can continue shopping now.")
-bill_gen_button=Button(Heading,bd=4,text="Proceed to Checkout",font="times 17 bold",bg="skyblue",fg="white",activebackground="purple",command=Bill).grid(row=0,column=3)
+bill_gen_button=Button(Heading,bd=4,text="Proceed to Checkout",font="times 17 bold",bg="skyblue",fg="white",activebackground="purple",command=Bill)
+bill_gen_button.grid(row=0,column=3)
 root.mainloop()
