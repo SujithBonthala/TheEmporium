@@ -13,4 +13,4 @@ After adding the required items, you will have to choose a coupon that is going 
 * 10% off. upto Rs.750
 * 5% off. upto Rs.1000
 
-After applying a coupon, an invoice will get generated that displays the items that have been purchased and the total amount to be paid.
+After applying a coupon, an invoice will get generated that displays the items that have been purchased and the total amount to be paid. This invoice can then be saved in the Invoices folder by just clicking on the Save Invoice button.
